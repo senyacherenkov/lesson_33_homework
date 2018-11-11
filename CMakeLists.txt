@@ -6,19 +6,19 @@ project(realty)
 set(CMAKE_BUILD_TYPE DEBUG)
 
 add_executable(rclst "rclst.cpp")
-add_executable(rclss "rclss.cpp")
+#add_executable(rclss "rclss.cpp")
 
-set_target_properties(rclst rclss PROPERTIES
+set_target_properties(rclst PROPERTIES
   CXX_STANDARD 14
   CXX_STANDARD_REQUIRED ON
   COMPILE_OPTIONS -Wpedantic -Wall -Wextra
 )
 
 target_link_libraries(rclst -lpthread -lopenblas -ldlib)
-target_link_libraries(rclss -lpthread -lopenblas -ldlib)
+#target_link_libraries(rclss -lpthread -lopenblas -ldlib)
 
 install(TARGETS rclst RUNTIME DESTINATION bin)
-install(TARGETS rclss RUNTIME DESTINATION bin)
+#install(TARGETS rclss RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
 
