@@ -1,0 +1,22 @@
+language: cpp
+before_script:
+- wget http://dlib.net/files/dlib-19.16.tar.bz2
+- tar xf dlib-19.16.tar.bz2
+- cd dlib-19.16
+- mkdir build
+- cd build
+- cmake ..
+- cmake --build . --config Release
+- sudo make install
+- sudo ldconfig
+- cd "${TRAVIS_BUILD_DIR}"
+- sudo apt-get install libopenblas-dev -y
+script:
+- cmake .
+- cmake --build .
+- cmake --build . --target package
+deploy:
+  provider: script
+  skip_cleanup: true
+  script:
+  - curl -T realty-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb -usenyacherenkov:$BINTRAY_API_KEY "https://api.bintray.com/content/senyacherenkov/lesson_33/realty/$TRAVIS_BUILD_NUMBER/realty-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb;deb_distribution=trusty;deb_component=main;deb_architecture=amd64;publish=1"
