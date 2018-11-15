@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
         std::vector<double> labels;
 
         // First, get our labeled set of training data
-        read_data(samples);
+        Utility::getInstance()->read_data(samples);
         cout << "samples.size(): "<< samples.size() << endl;
 
         //task of classification

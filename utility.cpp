@@ -1,7 +1,8 @@
 #include "utility.h"
 #include <iostream>
 
-std::vector<double> parse_data (std::string& data)
+Utility* Utility::instance = nullptr;
+std::vector<double> Utility::parse_data (std::string& data, bool isHandled)
 {
     size_t pos = 0;
     size_t newStart = 0;
@@ -21,17 +22,20 @@ std::vector<double> parse_data (std::string& data)
         value = std::stod(token);
     result.push_back(value);
 
-    int currentFloor = static_cast<int>(result[result.size() - 2]);
-    int wholeBuilding = static_cast<int>(result.back());
-    result.erase(std::next(result.begin(), static_cast<long>(result.size() - 1)));
-    if(currentFloor == wholeBuilding || currentFloor == FIRST_FLOOR)
-        result.back() = 0;
-    else
-        result.back() = 1;
+    if(!isHandled) {
+        int currentFloor = static_cast<int>(result[result.size() - 2]);
+        int wholeBuilding = static_cast<int>(result.back());
+        result.erase(std::next(result.begin(), static_cast<long>(result.size() - 1)));
+        if(currentFloor == wholeBuilding || currentFloor == FIRST_FLOOR)
+            result.back() = 0;
+        else
+            result.back() = 1;
+        return result;
+    }
     return result;
 }
 
-void read_data (std::vector<sample_type>& samples)
+void Utility::read_data (std::vector<sample_type>& samples)
 {
     sample_type m;
 
@@ -50,4 +54,14 @@ void read_data (std::vector<sample_type>& samples)
         // add this sample to our set of training samples
         samples.push_back(m);
     }
+}
+
+Utility *Utility::getInstance()
+{
+    if (instance == nullptr)
+    {
+        instance = new Utility();
+    }
+
+    return instance;
 }
