@@ -21,8 +21,6 @@
 using namespace std;
 using namespace dlib;
 
-typedef radial_basis_kernel<sample_type> kernel_type;
-
 // ----------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------
@@ -48,14 +46,16 @@ int main(int argc, char* argv[])
         cout << "samples.size(): "<< samples.size() << endl;
 
         //task of classification
-        kcentroid<kernel_type> kc(kernel_type(0.1),0.01, 8);
+        kcentroid<kernel_type> kc(kernel_type(0.01),1, 1);
         kkmeans<kernel_type> test(kc);
         test.set_number_of_centers(clusterQuantity);
         pick_initial_centers(static_cast<long>(clusterQuantity), initial_centers, samples, test.get_kernel());
         test.train(samples,initial_centers);
 
+        Utility::getInstance()->create_cluster_files(test, samples, clusterQuantity);
+
         for (unsigned long i = 0; i < samples.size(); ++i)
-            labels.push_back(test(samples[i]));
+            labels.push_back(test(samples[i]));        
 
         // The main object in this example program is the one_vs_one_trainer.  It is essentially
         // a container class for regular binary classifier trainer objects.  In particular, it
@@ -85,8 +85,8 @@ int main(int argc, char* argv[])
         // make the binary trainers and set some parameters
         krr_trainer<rbf_kernel> rbf_trainer;
         svm_nu_trainer<poly_kernel> poly_trainer;
-        poly_trainer.set_kernel(poly_kernel(0.1, 1, 2));
-        rbf_trainer.set_kernel(rbf_kernel(0.1));
+        poly_trainer.set_kernel(poly_kernel(1, 0, 1));
+        rbf_trainer.set_kernel(rbf_kernel(0.01));
 
         // Now tell the one_vs_one_trainer that, by default, it should use the rbf_trainer
         // to solve the individual binary classification subproblems.
@@ -99,10 +99,11 @@ int main(int argc, char* argv[])
         // Now let's do 5-fold cross-validation using the one_vs_one_trainer we just setup.
         // As an aside, always shuffle the order of the samples before doing cross validation.
         // For a discussion of why this is a good idea see the svm_ex.cpp example.
-        randomize_samples(samples, labels);
+        //randomize_samples(samples, labels);
         //cout << "cross validation: \n" << cross_validate_multiclass_trainer(trainer, samples, labels, 1) << endl;
         // Next, if you wanted to obtain the decision rule learned by a one_vs_one_trainer you
         // would store it into a one_vs_one_decision_function.
+        trainer.set_num_threads(10);
         one_vs_one_decision_function<ovo_trainer> df = trainer.train(samples, labels);
 
         cout << "predicted label: "<< df(samples[0])  << ", true label: "<< labels[0] << endl;
@@ -127,7 +128,7 @@ int main(int argc, char* argv[])
         // Put df into df2 and then save df2 to disk.  Note that we could have also said
         // df2 = trainer.train(samples, labels);  But doing it this way avoids retraining.
         df2 = df;
-        serialize(filename.c_str()) << df2;
+        serialize((filename + ".dat").c_str()) << df2;
     }
     catch (std::exception& e)
     {

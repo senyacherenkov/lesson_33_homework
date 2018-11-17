@@ -1,5 +1,6 @@
 #include "utility.h"
 #include <iostream>
+#include <fstream>
 
 Utility* Utility::instance = nullptr;
 std::vector<double> Utility::parse_data (std::string& data, bool isHandled)
@@ -49,10 +50,48 @@ void Utility::read_data (std::vector<sample_type>& samples)
         for(const auto & element: parsedData) {
             m(i) = element;
             i++;
+            if(i == 2)
+                break;
         }
 
         // add this sample to our set of training samples
         samples.push_back(m);
+
+        if(samples.size() == DATA_LIMIT)
+            break;
+    }
+}
+
+void Utility::create_cluster_files(kkmeans<kernel_type>& algorithm, std::vector<sample_type>& samples, size_t clusterQuantity)
+{
+    for(size_t i = 0; i < clusterQuantity; i++)
+    {
+        std::ofstream file(std::to_string(i) + "_data.txt");
+        for(const auto& data: samples)
+        {
+            if(algorithm(data) == i)
+                file << data;
+        }
+        file.close();
+    }
+}
+
+bool Utility::read_cluster_data(double label)
+{
+    std::ifstream file;
+    std::string filename = std::to_string(label) + "data.txt";
+    file.open(filename);
+    if(!file.is_open())
+        return false;
+
+    std::vector<std::vector<std::string>> fileData;
+
+    std::string temp;
+    size_t count = 0;
+    while(std::getline(file, temp)){
+        fileData
+        count++;
+
     }
 }
 
