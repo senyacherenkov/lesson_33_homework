@@ -86,10 +86,17 @@ bool Utility::read_cluster_data(double label)
 
     std::vector<std::vector<std::string>> fileData;
 
+    std::vector<std::string> tempVector;
     std::string temp;
     size_t count = 0;
     while(std::getline(file, temp)){
-        fileData
+        tempVector.push_back(temp);
+        if(count == DATA_LENGTH - 1)
+        {
+            fileData.push_back(tempVector);
+            tempVector.clear();
+            count = 0;
+        }
         count++;
 
     }
