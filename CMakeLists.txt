@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(realty)
-#VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER})
+project(realty VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER})
 
 set(CMAKE_BUILD_TYPE DEBUG)
+set( CMAKE_CXX_FLAGS "-fno-stack-protector" )
 
 add_executable(rclst rclst.cpp utility.h utility.cpp)
 add_executable(rclss rclss.cpp utility.h utility.cpp)

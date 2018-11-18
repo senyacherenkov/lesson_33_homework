@@ -26,6 +26,8 @@ public:
     std::vector<double> parse_data (std::string& data, bool isHandled = false);
     void read_data (std::vector<sample_type>& samples);
     void create_cluster_files(kkmeans<kernel_type>& algorithm, std::vector<sample_type>& samples, size_t clusterQuantity);
+    bool read_cluster_data(double label, std::vector<std::vector<string> > &fileData);
+    void sort_and_display_cluster_data(double x, double y, std::vector<std::vector<string> > &fileData);
 public:
     static Utility* getInstance();
 };

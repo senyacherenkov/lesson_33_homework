@@ -1,6 +1,7 @@
 #include "utility.h"
 #include <iostream>
 #include <fstream>
+#include <map>
 
 Utility* Utility::instance = nullptr;
 std::vector<double> Utility::parse_data (std::string& data, bool isHandled)
@@ -49,9 +50,7 @@ void Utility::read_data (std::vector<sample_type>& samples)
         long i = 0;
         for(const auto & element: parsedData) {
             m(i) = element;
-            i++;
-            if(i == 2)
-                break;
+            i++;            
         }
 
         // add this sample to our set of training samples
@@ -70,21 +69,20 @@ void Utility::create_cluster_files(kkmeans<kernel_type>& algorithm, std::vector<
         for(const auto& data: samples)
         {
             if(algorithm(data) == i)
-                file << data;
+                for(int i = 0; i < data.size(); i++)
+                    file << data(i) << std::endl;
         }
         file.close();
     }
 }
 
-bool Utility::read_cluster_data(double label)
+bool Utility::read_cluster_data(double label, std::vector<std::vector<std::string>>& fileData)
 {
     std::ifstream file;
-    std::string filename = std::to_string(label) + "data.txt";
+    std::string filename = std::to_string(static_cast<int>(label)) + "_data.txt";
     file.open(filename);
     if(!file.is_open())
         return false;
-
-    std::vector<std::vector<std::string>> fileData;
 
     std::vector<std::string> tempVector;
     std::string temp;
@@ -94,11 +92,32 @@ bool Utility::read_cluster_data(double label)
         if(count == DATA_LENGTH - 1)
         {
             fileData.push_back(tempVector);
-            tempVector.clear();
-            count = 0;
+            tempVector.clear();            
         }
         count++;
+        if(count == DATA_LENGTH)
+            count = 0;
+    }
+    return true;
+}
 
+void Utility::sort_and_display_cluster_data(double x, double y, std::vector<std::vector<string> > &fileData)
+{
+    std::map<double, std::vector<std::string>> result;
+    for(const auto& apartment: fileData) {
+        double diffX = x - std::stod(apartment.at(0));
+        double diffY = y - std::stod(apartment.at(1));
+        result.emplace(sqrt(pow(diffX, 2) + pow(diffY, 2)), apartment);
+    }
+
+    for(const auto& resultPair: result) {
+        std::string output;
+        for(const auto & str: resultPair.second)
+        {
+            output += str; output += ';';
+        }
+        output.back() = '\n';
+        std::cout << output;
     }
 }
 
