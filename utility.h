@@ -9,7 +9,7 @@ using namespace dlib;
 constexpr const char SEPARATOR = ';';
 constexpr size_t DATA_LENGTH = 7;
 constexpr size_t FIRST_FLOOR = 1;
-constexpr size_t DATA_LIMIT = 7000;
+constexpr size_t DATA_LIMIT = 1000;
 
 // Our data will be 7-dimensional data. So declare an appropriate type to contain these points.
 typedef dlib::matrix<double,7,1> sample_type;

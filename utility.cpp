@@ -42,22 +42,26 @@ void Utility::read_data (std::vector<sample_type>& samples)
     sample_type m;
 
     std::string data;
-    while(std::getline(std::cin, data))
+    while(true)
     {
-        std::vector<double> parsedData = parse_data(data);
-        assert(parsedData.size() == DATA_LENGTH);
+        std::getline(std::cin, data);
+        if(!data.empty())
+        {
+            std::vector<double> parsedData = parse_data(data);
+            assert(parsedData.size() == DATA_LENGTH);
 
-        long i = 0;
-        for(const auto & element: parsedData) {
-            m(i) = element;
-            i++;            
+            long i = 0;
+            for(const auto & element: parsedData) {
+                m(i) = element;
+                i++;
+            }
+
+            // add this sample to our set of training samples
+            samples.push_back(m);
+
+            if(samples.size() == DATA_LIMIT)
+                break;
         }
-
-        // add this sample to our set of training samples
-        samples.push_back(m);
-
-        if(samples.size() == DATA_LIMIT)
-            break;
     }
 }
 
