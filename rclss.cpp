@@ -39,6 +39,7 @@ int main(int argc, char* argv[])
             std::getline(std::cin, input);
             if(!input.empty())
             {
+                std::cout << "input data: " << input << std::endl;
                 std::vector<double> parsedData = Utility::getInstance()->parse_data(input, true);
                 long i = 0;
                 for(const auto & element: parsedData) {

@@ -75,7 +75,7 @@ void Utility::create_cluster_files(kkmeans<kernel_type>& algorithm, std::vector<
             if(algorithm(data) == i)
                 for(int i = 0; i < data.size(); i++) {
                     if(i < 2)
-                        file << std::setprecision(6) << data(i) << std::endl;
+                        file << std::setprecision(6) << std::fixed << data(i) << std::endl;
                     else if(i > 2)
                         file << std::setprecision(2) << std::fixed << data(i) << std::endl;
                     else if (i == data.size() - 1)
@@ -131,6 +131,7 @@ void Utility::sort_and_display_cluster_data(double x, double y, std::vector<std:
         output.back() = '\n';
         std::cout << output;
     }
+    std::cout << "------------------------------------------------" << std::endl;
 }
 
 Utility *Utility::getInstance()
